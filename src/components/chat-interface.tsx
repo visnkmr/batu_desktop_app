@@ -237,11 +237,26 @@ export default function ChatInterface({
   }, [message])
 
 
+  // State for dialog to request URL and model name
+  const [showDialog, setShowDialog] = useState(false);
+  const [tempUrl, setTempUrl] = useState(lmstudio_url);
+  const [tempModelName, setTempModelName] = useState(lmstudio_model_name);
+
   // Main function to handle sending a message
   const handleSendMessage = async (messageContent: string = input) => {
     if (!messageContent.trim() || isLoading) return;
 
     setError(null);
+    
+    // Check if using LM Studio or Ollama and if URL and model are provided
+    if (ollamastate === 1 || ollamastate === 2) {
+      if (!lmstudio_url || !lmstudio_model_name) {
+        setShowDialog(true);
+        setIsLoading(false);
+        return;
+      }
+    }
+
     setIsLoading(true);
     if (messageContent === input) {
         setInput(""); // Clear input only if sending from text area
@@ -374,10 +389,63 @@ export default function ChatInterface({
     }
   };
 
+  // Function to handle dialog submission
+  const handleDialogSubmit = () => {
+    if (tempUrl && tempModelName) {
+      // Assuming there is a way to update these values in the parent component or context
+      // For now, we'll just log a message since updating parent state requires additional props
+      console.log("Updated LM Studio/Ollama URL and Model:", tempUrl, tempModelName);
+      setShowDialog(false);
+      // Trigger sending the message again with updated values
+      // This is a placeholder; actual implementation depends on how state is managed
+      handleSendMessage();
+    } else {
+      setError("Both URL and model name are required.");
+    }
+  };
+
   // --- JSX Rendering ---
   const [sbi,setcobi] = useState(false)
   return (
     <div className="" onClick={()=>setcobi(false)}>
+      {/* Dialog for URL and Model Name */}
+      {showDialog && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-96 focus:outline-none" tabIndex={-1} onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleDialogSubmit();
+            }
+          }}>
+            <h2 className="text-xl font-semibold mb-4">LM Studio/Ollama Configuration</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Please provide the URL and model name to proceed.</p>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">URL</label>
+              <Input
+                type="text"
+                value={tempUrl}
+                onChange={(e) => setTempUrl(e.target.value)}
+                placeholder="Enter URL"
+                className="w-full"
+                autoFocus
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Model Name</label>
+              <Input
+                type="text"
+                value={tempModelName}
+                onChange={(e) => setTempModelName(e.target.value)}
+                placeholder="Enter Model Name"
+                className="w-full"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+              <Button onClick={handleDialogSubmit}>Submit</Button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Header */}
       {/* <div className="p-4 border-b border-gray-200 dark:border-gray-700">

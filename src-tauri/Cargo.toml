@@ -16,10 +16,10 @@ lto = true
 panic = "abort"
 
 [build-dependencies]
-tauri-build = { version = "1.2", features = [] }
+tauri-build = { version = "2.2.0", features = [] }
 
 [dependencies]
-tauri = { version = "1.2", features = ["shell-open"] }
+tauri = { version = "2.5.1", features = [] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
