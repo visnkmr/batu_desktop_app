@@ -307,7 +307,7 @@ const [collapsed, setCollapsed] = useState(true);
           <DarkButton/>
 
           </div>
-          <div className={cn(`absolute top-0 left-0 h-full bg-gray-50 dark:bg-gray-900 text-white transition-transform duration-300 ease-in-out z-40 ${
+          <div className={cn(`overflow-y-auto absolute top-0 left-0 h-full bg-gray-50 dark:bg-gray-900 text-white transition-transform duration-300 ease-in-out z-40 ${
           collapsed ? '-translate-x-full' : 'translate-x-0'}`,"pt-20 border-r border-gray-200 dark:border-r-gray-950")}>
           {ollamastate==0?(<div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
@@ -331,7 +331,7 @@ const [collapsed, setCollapsed] = useState(true);
           ) : <></>}
           
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pb-16 ">
             <ChatHistory
             chats={chats}
             currentChatId={currentChatId}
@@ -341,17 +341,18 @@ const [collapsed, setCollapsed] = useState(true);
       />
           </div>
 
-            <div className="absolute bottom-4 left-0 right-0 items-end gap-2 p-4 border-gray-200 dark:border-gray-700">
-          <Button onClick={createNewChat} className="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-900 dark:text-white text-black border border-gray-200 dark:border-gray-700">
-              <PlusIcon size={16} />
-              New Chat
-            </Button>
+            
             </div>
-            </div>
+           
         </div>
       )}
                 {/* <SidebarMenu/> */}
-      
+       {/* <div className={` ${!collapsed?"absolute bottom-0 left-0 p-4 z-50 w-48":"hidden"}`}> */}
+              {/* <Button onClick={createNewChat} className="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-900 dark:text-white text-black border border-gray-200 dark:border-gray-700">
+                <PlusIcon size={16} />
+                New Chat
+              </Button>
+            </div> */}
 
       {/* Main content */}
       <div  style={{ height: 'var(--100vh, 100vh)' }} className={cn("absolute bottom-0 z-10 w-full px-2 bg-gray-50 dark:bg-gray-900 overflow-hidden")} onClick={()=>{setCollapsed(true)}} >
