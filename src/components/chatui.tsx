@@ -47,6 +47,7 @@ export default function ChatUI({message,fgptendpoint="localhost",setasollama=fal
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [allModels, setAllModels] = useState<any[]>([])
+  
 
   useEffect(()=>{
     setCollapsed(true)
@@ -68,14 +69,29 @@ export default function ChatUI({message,fgptendpoint="localhost",setasollama=fal
     if (ollamastate === 3 && storedFilegpturl) {
       setFilegpturl(storedFilegpturl)
     }
+
+    if(ollamastate==0)
+    {
+      const storedApiKey = localStorage.getItem("openrouter_api_key")
+      if (storedApiKey) {
+        setApiKey(storedApiKey)
+      }
+      const selmodel = localStorage.getItem("or_model")
+      const selmodelinfo = localStorage.getItem("or_model_info")
+      if(selmodel)
+      setSelectedModel(selmodel)
+      setSelectedModelInfo(selectedModelInfo)
+    }
+
+    localStorage.setItem("laststate",ollamastate.toString())
   }, [ollamastate]);
   console.log(lmurl)
   console.log(model_name)
   useEffect(() => {
-    const storedApiKey = localStorage.getItem("openrouter_api_key")
-    if (storedApiKey) {
-      setApiKey(storedApiKey)
-    }
+
+    const lastState = localStorage.getItem("laststate");
+    setollamastate(lastState ? parseInt(lastState, 10) : 0);
+    
 
     
 
@@ -212,8 +228,10 @@ export default function ChatUI({message,fgptendpoint="localhost",setasollama=fal
 
   const handleSelectModel = (modelId: string) => {
     setSelectedModel(modelId)
+    localStorage.setItem("or_model",modelId);
     const modelInfo = allModels.find((model: any) => model.id === modelId)
     setSelectedModelInfo(modelInfo || null)
+    localStorage.setItem("or_model_info",modelInfo ||null);
     setIsModelDialogOpen(false)
   }
 const [collapsed, setCollapsed] = useState(true);
