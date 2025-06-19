@@ -239,52 +239,53 @@ export default function ChatUI({message,fgptendpoint="localhost",setasollama=fal
 
         const data = await response.json()
         const models = data.data
-
+    const freemodelss=models.filter((model)=>{if (!model?.id || !model?.pricing?.prompt || !model?.pricing?.completion ){return false}return true}).filter((m)=>{return parseFloat(new bigDecimal(m.pricing.prompt).getValue())<=0?true:false}).sort((a, b) => b.created-(a.created))  ;  
+      console.log(freemodelss)
     // // Create main directory
     // if (!fs.existsSync(PATH_TO_PROVIDERS)) {
     //     fs.mkdirSync(PATH_TO_PROVIDERS)
     // }
 
     // Group models by provider
-    const providerModels = new Map<string, ModelRow[]>()
+    // const providerModels = new Map<string, ModelRow[]>()
+        
+    // for (const model of models) {
+    //     if (!model?.id || !model?.pricing?.prompt || !model?.pricing?.completion ) {
+    //         console.warn('Skipping invalid model:', model)
+    //         continue
+    //     }
+    //     const [provider, ...modelParts] = model.id.split('/')
+    //     // if (!supportedProviderList.includes(provider)) {
+    //     //     continue
+    //     // }
+    //     if (!providerModels.has(provider)) {
+    //         providerModels.set(provider, [])
+    //     }
 
-    for (const model of models) {
-        if (!model?.id || !model?.pricing?.prompt || !model?.pricing?.completion ) {
-            console.warn('Skipping invalid model:', model)
-            continue
-        }
-        const [provider, ...modelParts] = model.id.split('/')
-        // if (!supportedProviderList.includes(provider)) {
-        //     continue
-        // }
-        if (!providerModels.has(provider)) {
-            providerModels.set(provider, [])
-        }
+    //     // Convert pricing values to numbers before using toFixed(10)
+    //     const promptPrice = new bigDecimal(model.pricing.prompt).getValue()
+    //     const completionPrice = new bigDecimal(model.pricing.completion).getValue()
 
-        // Convert pricing values to numbers before using toFixed(10)
-        const promptPrice = new bigDecimal(model.pricing.prompt).getValue()
-        const completionPrice = new bigDecimal(model.pricing.completion).getValue()
+    //     const modelRow: ModelRow = {
+    //         id:model.id,
+    //         context_length:model.context_length,
+    //         model: modelParts.join('/'), // Only include the part after the provider
+    //         cost: {
+    //             prompt_token: parseFloat(promptPrice),
+    //             completion_token: parseFloat(completionPrice),
+    //         },
+    //         supported_parameters:model.supported_parameters
+    //     }
 
-        const modelRow: ModelRow = {
-            id:model.id,
-            context_length:model.context_length,
-            model: modelParts.join('/'), // Only include the part after the provider
-            cost: {
-                prompt_token: parseFloat(promptPrice),
-                completion_token: parseFloat(completionPrice),
-            },
-            supported_parameters:model.supported_parameters
-        }
+    //     providerModels.get(provider)!.push(modelRow)
+    // }
 
-        providerModels.get(provider)!.push(modelRow)
-    }
-
-    const allProviders = Array.from(providerModels.values()).flat()
+    // const allProviders = Array.from(providerModels.values()).flat()
 
     // Sort by model name for easier diffs
-    const freemodels=allProviders.filter((m)=>{return m.cost.prompt_token<=0?true:false}).sort((a, b) => a.model.localeCompare(b.model))  
-    console.log(freemodels)
-    setAllModels(freemodels)
+    // const freemodels=allProviders.filter((m)=>{return m.cost.prompt_token<=0?true:false}).sort((a, b) => a.model.localeCompare(b.model))  
+    // console.log(freemodels)
+    setAllModels(freemodelss)
         // setAllModels(data.data)
 
         // // Filter for free models (where pricing is 0)
