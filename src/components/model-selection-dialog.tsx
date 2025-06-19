@@ -8,6 +8,8 @@ import { ScrollArea } from "../components/ui/scroll-area"
 import { Input } from "../components/ui/input"
 import { Badge } from "../components/ui/badge"
 import Marquee from "react-fast-marquee";
+import type { Chat, BranchPoint, ModelRow } from "../lib/types"
+
 interface ModelSelectionDialogProps {
   isOpen: boolean
   onClose: () => void
@@ -167,7 +169,7 @@ export default function ModelSelectionDialog({
         ) : (
           // <ScrollArea className="flex-1 pr-4">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredModels.slice(0, modelcount).map((model) => (
+              {filteredModels.slice(0, modelcount).map((model:ModelRow) => (
                 <div
                   key={model.id}
                   className={cn(
@@ -188,12 +190,12 @@ export default function ModelSelectionDialog({
                   </div>
 
                   <div className="text-center w-full">
-                   <HoverMarqueeItem text={model.id.split("/").pop()} />
+                   <HoverMarqueeItem text={model.id.split("/").pop()!} />
                     <p className="text-xs text-gray-500 truncate w-full" title={model.id.split("/")[0]}>
                       {model.id.split("/")[0]}
                     </p>
                   </div>
-
+                  {(model.supported_parameters.includes("include_reasoning") || model.supported_parameters.includes("reasoning"))?<div>Supports reasoning</div>:""}
                   <div className="mt-2 flex flex-col items-center gap-1 w-full">
                     <Badge variant="outline" className="text-xs">
                       {model.context_length.toLocaleString()} tokens
